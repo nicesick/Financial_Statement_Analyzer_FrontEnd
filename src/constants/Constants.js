@@ -1,0 +1,1 @@
+export const ENDPOINTS = 'http://localhost:8080/'
