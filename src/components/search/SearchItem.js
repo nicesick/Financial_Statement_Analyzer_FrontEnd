@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, TextField } from '@material-ui/core'
+import { Grid, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio, TextField } from '@material-ui/core'
 
 function SearchItem(props) {
     const title         = props.content.title;
@@ -23,10 +23,12 @@ function SearchItem(props) {
     }
 
     return (
-        <FormControl fullWidth margin="normal">
-            <FormLabel>{title}</FormLabel>
-            {item}
-        </FormControl>
+        <Grid item xs={12}>
+            <FormControl fullWidth margin="normal">
+                <FormLabel>{title}</FormLabel>
+                {item}
+            </FormControl>
+        </Grid>
     )
 }
 

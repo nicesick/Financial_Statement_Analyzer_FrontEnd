@@ -18,10 +18,12 @@ function SearchContent(props) {
         <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
                 <form onSubmit={(event) => searchEvent(event, props)}>
-                    {contents.map((content, index) => {
-                        return <SearchItem key={index} content={content} />
-                    })}
-                    <SearchButton isCorpInfosRequested={props.isCorpInfosRequested}/>
+                    <Grid container>
+                        {contents.map((content, index) => {
+                            return <SearchItem key={index} content={content} />
+                        })}
+                        <SearchButton isCorpInfosRequested={props.isCorpInfosRequested}/>
+                    </Grid>
                 </form>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -44,10 +46,6 @@ const searchEvent = (event, props) => {
     //     return true;
     // });
     event.preventDefault();
-
-    console.log(event.target['평가여부'].value);
-    console.log(event.target['이슈상태'].value);
-    console.log(event.target['상장종류'].value);
 
     props.getCorpInfos(
           props.dispatch

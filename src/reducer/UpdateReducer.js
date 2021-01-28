@@ -14,7 +14,13 @@ export function isUpdateRequested(state = false, action) {
 export function updateTime(state = {}, action) {
     switch(action.type) {
         case GET_SUCCESSED_UPDATE:
-            return action.update
+            if (Object.keys(action.update).length > 0) {
+                return Object.assign({}, action.update, {
+                    updateDate : action.update.updateDate.substr(0, 10)
+                });
+            } else {
+                return Object.assign({}, action.update);
+            }
         case GET_FAILED_UPDATE:
             return Object.assign({}, state, {
                 progress : 'error'

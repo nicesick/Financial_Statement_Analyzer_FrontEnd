@@ -44,7 +44,7 @@ function AnalyzerResult(props) {
     if (isItems) {
         const corp_detail = props.corpDetail;
 
-        if (corp_detail.corpDetails !== undefined) {
+        if (corp_detail.corpDetails !== undefined && corp_detail.evalDone === true) {
             corp_detail.corpDetails.map(corpDetail => {
                 thstrmDts.push(corpDetail.thstrmDt);
         

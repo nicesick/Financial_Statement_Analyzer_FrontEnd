@@ -8,7 +8,7 @@ function NavUpdateTime(props) {
     const successedMessage      = props.updateTime.updateDate;
     const failedMessage         = '업데이트에 실패하였습니다.';
 
-    let updateMessage       = undefined;
+    let updateMessage           = undefined;
 
     if (props.isUpdateRequested === true) {
         updateMessage       = <Alert severity="warning">{updateingMessage}</Alert>;
@@ -18,7 +18,7 @@ function NavUpdateTime(props) {
         updateMessage       = <Alert severity="warning">{updateingMessage}</Alert>;
     } else {
         if (props.updateTime.progress === 'success') {
-            updateMessage = <Alert severity="success">{successedMessage}</Alert>;
+            updateMessage = <Alert severity="success">업데이트 : {successedMessage}</Alert>;
         } else {
             updateMessage = <Alert severity="error">{failedMessage}</Alert>;
         }

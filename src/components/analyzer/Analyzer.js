@@ -15,6 +15,24 @@ class Analyzer extends React.Component {
         getCorpDetail(dispatch, corpCode);
     }
 
+    shouldComponentUpdate(newProps, newState) {
+        if (Object.keys(newProps.corpDetail).length > 0
+            && (newProps.isCorpDetailRequested === false 
+            && newProps.corpCode !== newProps.corpDetail.corp_code)
+        ) {
+            const { dispatch, corpCode } = newProps;
+            getCorpDetail(dispatch, corpCode);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    // componentDidUpdate(newProps, newState) {
+    //     console.log(newProps);
+    // }
+
     render() {
         return (
             <Grid container spacing={1}>
