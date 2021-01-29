@@ -9,52 +9,18 @@
 
 
 
-## How to Execute
+## Environments
 
-* 만약, BackEnd 주소에 대한 내용이 변경되었다면 Constant.js 에서 변경할 수 있습니다.
-
-```powershell
-# src/constants/Constants.js
-export const ENDPOINTS = 'http://localhost:8080/'
-```
-
-* 이외에 별다른 환경설정은 필요없습니다. 바로 구동하시면 됩니다.
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Node.js](https://nodejs.org/ko/) 14.15.4
+- React, Redux, React-Redux, React-Router
+- Axios
+- Chart.js
+- Material-UI
 
 ```powershell
-> npm start
-```
+# 위의 환경들은 아래의 명령어들로 프로젝트에 설치하였습니다.
 
-
-
-## Dependencies
-
-* 해당 Dependencies 들은 **Node.js** 안에서 구동됩니다.
-
-```json
-"dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.3",
-    "@testing-library/user-event": "^12.6.2",
-    "axios": "^0.21.1",
-    "chart.js": "^2.9.4",
-    "react": "^17.0.1",
-    "react-chartjs-2": "^2.11.1",
-    "react-dom": "^17.0.1",
-    "react-redux": "^7.2.2",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.1",
-    "redux": "^4.0.5",
-    "redux-logger": "^3.0.6",
-    "web-vitals": "^0.2.4"
-}
-```
-
-* 위의 Dependency 들은 아래와 같이 설치할 수 있습니다.
-
-```powershell
 # 기본 react app 생성
 > npx i create-react-app
 
@@ -73,6 +39,23 @@ export const ENDPOINTS = 'http://localhost:8080/'
 
 # material-ui
 > npm i --save @material-ui/core @material-ui/lab
+```
+
+
+
+## How to Execute
+
+* 만약, BackEnd 주소에 대한 내용이 변경되었다면 Constant.js 에서 변경할 수 있습니다.
+
+```powershell
+# src/constants/Constants.js
+export const ENDPOINTS = 'http://localhost:8080/'
+```
+
+* 이외에 별다른 환경설정은 필요없습니다. 바로 구동하시면 됩니다.
+
+```powershell
+> npm start
 ```
 
 
