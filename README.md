@@ -1,6 +1,8 @@
 # Financial_Statement_Analyzer_FrontEnd
 
 
+
+
 ## Goal
 
 [Financial_Statement_Analyzer_BackEnd](https://github.com/nicesick/Financial_Statement_Analyzer_BackEnd) 에서 받아온 재무제표 데이터를 사용자들이 해당 기업에 대해 판단하기 쉽게 시각화하는 프로젝트 입니다.
@@ -134,9 +136,9 @@ export const ENDPOINTS = 'http://localhost:8080/'
   export default connect()(App)
   ```
 
-  * 이런 식으로 props 를 전달 할 시 <code><Route path="/analyze/:corpCode"    component={() => {<Analyzer {...this.props} />}}></Route></code> 부분에서 :corpCode 값이 제대로 전달되지 않는 문제가 발생했습니다. 
+  * 이런 식으로 props 를 전달 할 시 <code><Route path="/analyze/:corpCode"    component={() => {<Analyzer {...this.props} />}}>\</Route></code> 부분에서 :corpCode 값이 제대로 전달되지 않는 문제가 발생했습니다. 
   * Router 에서 쓰이는 Props 인 match, location. history 인자들이 this.props 에 포함되지 않은 채로 전달되었기 때문이었습니다.
-  * Route 부분을 다시 <code><Route path="/analyze/:corpCode"    component={Analyzer}></Route></code> 로 복구 한 뒤, 하위 컴포넌트( Analyzer.js ) 에도 connect 를 추가하였습니다.
+  * Route 부분을 다시 <code>\<Route path="/analyze/:corpCode"    component={Analyzer}>\</Route></code> 로 복구 한 뒤, 하위 컴포넌트( Analyzer.js ) 에도 connect 를 추가하였습니다.
 
   ```javascript
   /* 
@@ -203,6 +205,9 @@ export const ENDPOINTS = 'http://localhost:8080/'
 
 
 ## Todos
+
+1. 서버로부터 error 및 updating 응답을 받았을 경우, 주기적으로 비동기요청을 보내는 **setInterval** 추가 필요
+2. 서버에 Spring-Security 적용 시, 로그인 화면 추가 필요
 
 
 
