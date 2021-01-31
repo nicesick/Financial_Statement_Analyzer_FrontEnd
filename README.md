@@ -52,9 +52,10 @@
 export const ENDPOINTS = 'http://localhost:8080/'
 ```
 
-* 이외에 별다른 환경설정은 필요없습니다. 바로 구동하시면 됩니다.
+* 필요한 module 들을 다운로드 후, 구동이 가능합니다.
 
 ```powershell
+> npm install
 > npm start
 ```
 
@@ -66,21 +67,18 @@ export const ENDPOINTS = 'http://localhost:8080/'
 
 > components
 >
-> ​	* analyzer
->
-> ​	* guide
->
-> ​	* nav
->
-> ​	* search
->
-> actions
->
-> reducer
->
-> constants
->
-> utils
+> 	* analyzer
+>	* guide
+> 	* nav
+>	* search
+> 
+>actions
+> 
+>reducer
+> 
+>constants
+> 
+>utils
 
 
 
