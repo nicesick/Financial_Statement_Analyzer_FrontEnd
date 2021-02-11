@@ -44,18 +44,18 @@ function AnalyzerResult(props) {
     if (isItems) {
         const corp_detail = props.corpDetail;
 
-        if (corp_detail.corpDetails !== undefined && corp_detail.evalDone === true) {
-            corp_detail.corpDetails.map(corpDetail => {
-                thstrmDts.push(corpDetail.thstrmDt);
+        if (corp_detail.corp_details !== undefined && corp_detail.corp_evals.issue.is_eval_done === true) {
+            corp_detail.corp_details.map(corp_detail => {
+                thstrmDts.push(corp_detail.thstrm_dt);
         
-                totLiabilitys.push(parseInt(corpDetail.totLiability.replace(/,/g, '')));
-                totStockholdersEquitys.push(parseInt(corpDetail.totStockholdersEquity.replace(/,/g, '')));
-                stockholdersEquitys.push(parseInt(corpDetail.stockholdersEquity.replace(/,/g, '')));
+                totLiabilitys.push(parseInt(corp_detail.tot_liability.replace(/,/g, '')));
+                totStockholdersEquitys.push(parseInt(corp_detail.tot_stockholders_equity.replace(/,/g, '')));
+                stockholdersEquitys.push(parseInt(corp_detail.stockholders_equity.replace(/,/g, '')));
         
-                revenues.push(parseInt(corpDetail.revenue.replace(/,/g, '')));
-                operatingIncomes.push(parseInt(corpDetail.operatingIncome.replace(/,/g, '')));
-                incomeBeforeTaxs.push(parseInt(corpDetail.incomeBeforeTax.replace(/,/g, '')));
-                netIncomes.push(parseInt(corpDetail.netIncome.replace(/,/g, '')));
+                revenues.push(parseInt(corp_detail.revenue.replace(/,/g, '')));
+                operatingIncomes.push(parseInt(corp_detail.operating_income.replace(/,/g, '')));
+                incomeBeforeTaxs.push(parseInt(corp_detail.income_before_tax.replace(/,/g, '')));
+                netIncomes.push(parseInt(corp_detail.net_income.replace(/,/g, '')));
         
                 return true;
             });
@@ -95,7 +95,7 @@ function AnalyzerResult(props) {
                 label   : '매출액' ,
                 data    : revenues
             }],
-            result      : corp_detail.revenueLack
+            result      : corp_detail.corp_evals.issue.is_revenue_lack
         };
     
         const impairment_table_infos = {
@@ -108,7 +108,7 @@ function AnalyzerResult(props) {
                 label   : '자본금' ,
                 data    : stockholdersEquitys
             }],
-            result      : corp_detail.equityImpairment
+            result      : corp_detail.corp_evals.issue.is_equity_impairment
         };
     
         const operatingIncome_table_infos = {
@@ -118,7 +118,7 @@ function AnalyzerResult(props) {
                 label   : '영업이익' ,
                 data    : operatingIncomes
             }],
-            result      : corp_detail.operatingLoss
+            result      : corp_detail.corp_evals.issue.is_operating_loss
         };
     
         const lossBeforeTax_table_infos = {
@@ -131,7 +131,7 @@ function AnalyzerResult(props) {
                 label   : '법인세차감전 순이익' ,
                 data    : incomeBeforeTaxs
             }],
-            result      : corp_detail.lossBeforeTax
+            result      : corp_detail.corp_evals.issue.is_loss_before_tax
         };
     
         tables_infos.push(revenue_table_infos);
