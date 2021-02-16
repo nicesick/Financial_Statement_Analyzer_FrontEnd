@@ -6,18 +6,18 @@ import SearchResultItem from './SearchResultItem'
 function SearchResult(props) {
     const searchingMessage      = '검색중입니다.';
     const shouldSearchMessage   = '검색해주세요.';
-
     const successedMessage      = ' 건이 검색되었습니다.';
     const failedMessage         = '검색에 실패하였습니다.';
 
-    let searchMessage   = undefined;
-    let isItems         = false;
-    if (props.isCorpInfosRequested === true) {
+    let searchMessage           = undefined;
+    let isItems                 = false;
+
+    if (props.searching) {
         searchMessage       = <Alert severity="warning">{searchingMessage}</Alert>;
     } else if (Object.keys(props.corpInfos).length < 1) {
         searchMessage       = <Alert severity="info">{shouldSearchMessage}</Alert>;
     } else {
-        if (props.corpInfos.status === true) {
+        if (props.corpInfos.status === 200) {
             isItems         = true;
             searchMessage   = <Alert severity="success">{props.corpInfos.data.length}{successedMessage}</Alert>;
         } else {

@@ -1,58 +1,104 @@
-import React    from 'react'
+import React, { useEffect }   from 'react'
+import { connect }  from 'react-redux'
 
-import { Grid } from '@material-ui/core'
+import { Grid, Input, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from '@material-ui/core'
 
 import SearchItem   from './SearchItem'
 import SearchButton from './SearchButton'
 import SearchResult from './SearchResult'
 
-function SearchContent(props) {
-    const contents  = [
-        {title : '검색어'   , type : 'text'},
-        {title : '평가여부' , type : 'radio', values : ['True'   , 'False'], defaultValue : 1},
-        {title : '이슈상태' , type : 'radio', values : ['True'   , 'False'], defaultValue : 2},
-        {title : '상장종류' , type : 'radio', values : ['Y'      , 'K'],     defaultValue : 1}
-    ];
+import { changeSearchParams, searchEvaluatesThunk, searchCorpInfosThunk } from '../../slice/SearchSlice'
+
+const SearchContent = (props) => {
+    const { dispatch }                      = props;
+    const { searchParams, searchEvaluates }  = props.search;
+
+    useEffect(() => {
+        dispatch(searchEvaluatesThunk());
+    }, [dispatch]);
+
+    // const contents  = [
+    //     {title : '검색어'   , type : 'text'},
+    //     {title : '상장종류' , type : 'radio', labels: ['코스피', '코스닥'], values : ['Y', 'K'], defaultValue : 1},
+    //     {title : '정렬종류' , type : 'radio', }
+    // ];
+
+    const onSubmitEvent = (event, props) => {
+        event.preventDefault();
+        dispatch(searchCorpInfosThunk(searchParams));
+        // props.getCorpInfos(
+        //       props.dispatch
+        //     , event.target['평가여부'].value
+        //     , event.target['이슈상태'].value
+        //     , event.target['상장종류'].value
+        //     , event.target['검색어'].value);
+    };
+
+    const onChangeCorpName = (event) => {
+        dispatch(changeSearchParams({ corpName: event.target.value }));
+    };
+
+    const onChangeCorpCls = (event) => {
+        dispatch(changeSearchParams({ corpCls: event.target.value }));
+    };
+
+    const onChangeSortByService = (event) => {
+        dispatch(changeSearchParams({ sortByService: event.target.value }));
+    };
 
     return (
         <Grid container spacing={1}>
             <Grid item xs={12} md={6}>
-                <form onSubmit={(event) => searchEvent(event, props)}>
+                <form onSubmit={(event) => onSubmitEvent(event, props)}>
                     <Grid container>
-                        {contents.map((content, index) => {
-                            return <SearchItem key={index} content={content} />
-                        })}
-                        <SearchButton isCorpInfosRequested={props.isCorpInfosRequested}/>
+                        {/* {searchContents.map((content, index) => {
+                            return <SearchItem key={index} />
+                        })} */}
+                        <Grid item xs={12}>
+                            <FormControl fullWidth margin="normal">
+                                <FormLabel>검색어</FormLabel>
+                                <FormControlLabel name='검색어' control={<Input fullWidth size="small" value={searchParams.corpName} onChange={onChangeCorpName} />}/>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormControl fullWidth margin="normal">
+                                <FormLabel>상장종류</FormLabel>
+                                <RadioGroup name='상장종류' row={true} value={searchParams.corpCls} onChange={onChangeCorpCls} >
+                                    {/* {values.map((value, index) => {
+                                        return <FormControlLabel key={index} label={value} value={value} control={<Radio />}/>
+                                    })} */}
+                                    <FormControlLabel label='코스피' value={'Y'} control={<Radio />} />
+                                    <FormControlLabel label='코스닥' value={'K'} control={<Radio />} />
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <FormControl fullWidth margin="normal">
+                                <FormLabel>정렬종류</FormLabel>
+                                <RadioGroup name='정렬종류' row={true} value={searchParams.sortByService} onChange={onChangeSortByService} >
+                                    {searchEvaluates.map((searchEvaluate, idx) => {
+                                        return <FormControlLabel key={idx} label={searchEvaluate.name} value={searchEvaluate.value} control={<Radio />} defaultChecked={idx === 0 ? true : false}/>
+                                    })}
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+                        <SearchButton searching={props.searching} />
                     </Grid>
                 </form>
             </Grid>
             <Grid item xs={12} md={6}>
-                <SearchResult {...props} />
+                <SearchResult {...props.search} />
             </Grid>
         </Grid>
     );
 }
 
-const searchEvent = (event, props) => {
-    // const { itemRefs, getCorpInfos }    = props;
-    // let     searchParams                = {};
-
-    // itemRefs.map(ref => {
-    //     const refValue              = ref.current;
-    //     console.log(refValue);
-
-    //     searchParams[refValue.name] = refValue.value;
-
-    //     return true;
-    // });
-    event.preventDefault();
-
-    props.getCorpInfos(
-          props.dispatch
-        , event.target['평가여부'].value
-        , event.target['이슈상태'].value
-        , event.target['상장종류'].value
-        , event.target['검색어'].value);
+const mapStateToProps = (state) => {
+    return {
+        search: state.search
+    };
 }
 
-export default SearchContent
+export default connect(mapStateToProps)(SearchContent)

@@ -2,6 +2,14 @@
 
 
 
+## History
+
+> 2021-02-15 : createSlice, createAsyncThunk 를 사용하기 위해 Redux-Toolkit 모듈을 적용하였습니다.
+>
+> 2021-02-16 : Search 부분을 createSlice, createAsyncThunk 형식으로 수정하였습니다. 그 과정에서 Redux-Thunk 모듈을 추가하였습니다.
+
+
+
 
 ## Goal
 
@@ -17,6 +25,8 @@
 - Axios
 - Chart.js
 - Material-UI
+- Redux-Toolkit
+- Redux-Thunk
 
 ```powershell
 # 위의 환경들은 아래의 명령어들로 프로젝트에 설치하였습니다.
@@ -39,6 +49,12 @@
 
 # material-ui
 > npm i --save @material-ui/core @material-ui/lab
+
+# redux-toolkit
+> npm install --save @reduxjs/toolkit
+
+# redux-thunk
+> npm install --save redux-thunk
 ```
 
 
@@ -64,21 +80,24 @@ export const ENDPOINTS = 'http://localhost:8080/'
 ## File structure
 
 * 첫번 째로 역할 별로 분류하고, Components 에서는 또 한 번 기능별로 구분하였습니다.
+* 2021-02-16 : slice 폴더가 추가되었습니다.
 
 > components
 >
 > 	* analyzer
->	* guide
+> 	* guide
 > 	* nav
->	* search
-> 
->actions
-> 
->reducer
-> 
->constants
-> 
->utils
+> 	* search
+>
+> actions
+>
+> reducer
+>
+> slice
+>
+> constants
+>
+> utils
 
 
 
@@ -209,6 +228,7 @@ export const ENDPOINTS = 'http://localhost:8080/'
 * Chart.js
   * [Chart.js Examples](https://www.chartjs.org/samples/latest/) : Chart.js 그리는데 필요한 Examples 들을 볼 수 있습니다. 페이지에 들어가서 F12로 개발자도구에 들어가면 해당 차트에 적용된 data 와 options 들을 볼 수 있습니다.
   * [256 color 색상표](http://www.n2n.pe.kr/lev-1/color.htm) : 차트 색깔을 그리는데 필요한 색상표 입니다.
-
 * Material-ui
   * [Material-UI 자습서](https://material-ui.com/components/grid/) : material-ui 에서 지원하는 component 들을 알 수 있습니다. 해당 component의 API 를 검색하면 안에 적용할 수 있는 props 들도 파악할 수 있습니다.
+* Redux-Toolkit
+  * [redux-toolkit 을 사용해 redux 작성 하기](https://blog.woolta.com/categories/1/posts/204) : createSlice, createAsyncThunk 형식을 적용하는 방법에 대한 문서입니다.

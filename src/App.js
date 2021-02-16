@@ -15,13 +15,13 @@ class App extends React.Component {
             <BrowserRouter>
                 <Grid container spacing={1}>
                     <Grid item xs={4} md={3}>
-                        <Nav />
+                        {/* <Nav /> */}
                     </Grid>
                     <Grid item xs={8} md={9}>
                         <Route path="/"                     component={Guide} exact></Route>
                         <Route path="/guide"                component={Guide}></Route>
                         <Route path="/search"               component={Search}></Route>
-                        <Route path="/analyze/:corpCode"    component={Analyzer}></Route>
+                        {/* <Route path="/analyze/:corpCode"    component={Analyzer}></Route> */}
                     </Grid>
                 </Grid>
             </BrowserRouter>
