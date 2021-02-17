@@ -1,16 +1,26 @@
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom'
+import { connect }  from 'react-redux'
 
 import { Grid, Button } from '@material-ui/core'
 
+import { updatePostThunk } from '../../slice/UpdateSlice'
+
 function NavItem(props) {
+    const { dispatch }      = props;
+    const { updating }  = props.update;
+
     const name = props.name;
     const href = props.href;
 
     let content = '';
 
+    const onUpdateClick = () => {
+        dispatch(updatePostThunk());
+    }
+
     if (name === 'Update') {
         content = (
-            <Button fullWidth size="large" variant="outlined" color="primary" onClick={(event) => onUpdateClick(event, props)} disabled={props.isUpdateRequested === true ? true : false}>
+            <Button fullWidth size="large" variant="outlined" color="primary" onClick={onUpdateClick} disabled={updating ? true : false}>
                 {name}
             </Button>
         );
@@ -31,9 +41,10 @@ function NavItem(props) {
     );
 }
 
-function onUpdateClick(event, props) {
-    event.preventDefault();
-    props.onUpdate(props.dispatch);
+const mapStateToProps = state => {
+    return {
+        update: state.update
+    };
 }
 
-export default NavItem
+export default connect(mapStateToProps)(NavItem)

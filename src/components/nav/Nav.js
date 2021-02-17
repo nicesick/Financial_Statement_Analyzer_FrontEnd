@@ -1,4 +1,4 @@
-import React        from 'react'
+import React, { useEffect }   from 'react'
 import axios        from 'axios'
 import { connect }  from 'react-redux'
 
@@ -11,64 +11,57 @@ import NavItem          from './NavItem'
 import NavUpdateTime    from './NavUpdateTime'
 import AnalyzerSearch   from '../analyzer/AnalyzerSearch'
 
-class Nav extends React.Component {
-    getUpdateTime(dispatch) {
-        dispatch(requestUpdate());
+import { updateGetThunk } from '../../slice/UpdateSlice'
 
-        axios.get(ENDPOINTS + 'api/update')
-        .then(response => {
-            dispatch(getSuccessedUpdate(response.data));
-        }).catch(error => {
-            dispatch(getFailedUpdate(error));
-        }).finally(() => {
-            dispatch(responseUpdate());
-        });
-    }
+const Nav = props => {
+    const { dispatch } = props;
 
-    onUpdate(dispatch) {
-        dispatch(requestUpdate());
+    useEffect(() => {
+        dispatch(updateGetThunk());
+    }, [dispatch]);
 
-        axios.post(ENDPOINTS + 'api/update')
-        .then(response => {
-            dispatch(getSuccessedUpdate(response.data));
-        }).catch(error => {
-            dispatch(getFailedUpdate(error));
-        }).finally(() => {
-            dispatch(responseUpdate());
-        });
-    }
-
-    componentDidMount() {
-        const { dispatch } = this.props;
-        this.getUpdateTime(dispatch);
-    }
-
-    render() {
-        const navs = [
-            {name : 'Guide' , link : '/guide'},
-            {name : 'Search', link : '/search'},
-            {name : 'Update', link : '/update'}
-        ];
-
-        return (
-            <Grid container spacing={1}>
-                {navs.map((nav, index) => {
-                    return <NavItem key={index} {...this.props} name={nav.name} href={nav.link} onUpdate={this.onUpdate}/>
-                })}
-                <NavUpdateTime {...this.props} />
-                <AnalyzerSearch {...this.props} />
-            </Grid>
-        );
-    }
+    return (
+        <Grid container spacing={1}>
+            {/* {navs.map((nav, index) => {
+                return <NavItem key={index} {...this.props} name={nav.name} href={nav.link} onUpdate={this.onUpdate}/>
+            })} */}
+            <NavItem name='Guide' href='/guide' />
+            <NavItem name='Search' href='/search' />
+            <NavItem name='Update' href='/update' />
+    
+            <NavUpdateTime {...props.update} />
+            {/* <AnalyzerSearch {...this.props} /> */}
+        </Grid>
+    );
 }
 
-function select(props) {
+// class Nav extends React.Component {
+//     render() {
+//         // const navs = [
+//         //     {name : 'Guide' , link : '/guide'},
+//         //     {name : 'Search', link : '/search'},
+//         //     {name : 'Update', link : '/update'}
+//         // ];
+//         return (
+//             <Grid container spacing={1}>
+//                 {/* {navs.map((nav, index) => {
+//                     return <NavItem key={index} {...this.props} name={nav.name} href={nav.link} onUpdate={this.onUpdate}/>
+//                 })} */}
+//                 <NavItem name='Guide' href='/guide' />
+//                 <NavItem name='Search' href='/search' />
+//                 <NavItem name='Update' href='/update' />
+
+//                 <NavUpdateTime />
+//                 {/* <AnalyzerSearch {...this.props} /> */}
+//             </Grid>
+//         );
+//     }
+// }
+
+const mapStateToProps = state => {
     return {
-        isUpdateRequested       : props.isUpdateRequested,
-        updateTime              : props.updateTime,
-        isCorpInfosRequested    : props.isCorpInfosRequested,
-        corpInfos               : props.corpInfos
-    }
+        update: state.update
+    };
 }
 
-export default connect(select)(Nav)
+export default connect(mapStateToProps)(Nav)

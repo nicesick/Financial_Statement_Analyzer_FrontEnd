@@ -11,7 +11,7 @@ import { changeSearchParams, searchEvaluatesThunk, searchCorpInfosThunk } from '
 
 const SearchContent = (props) => {
     const { dispatch }                      = props;
-    const { searchParams, searchEvaluates }  = props.search;
+    const { searchParams, searchEvaluates } = props.search;
 
     useEffect(() => {
         dispatch(searchEvaluatesThunk());

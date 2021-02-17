@@ -10,24 +10,24 @@ import { requestCorpDetail, responseCorpDetail, getSuccessedCorpDetail, getFaile
 import AnalyzerResult from './AnalyzerResult'
 
 class Analyzer extends React.Component {
-    componentDidMount() {
-        const { dispatch, corpCode } = this.props;
-        getCorpDetail(dispatch, corpCode);
-    }
+    // componentDidMount() {
+    //     const { dispatch, corpCode } = this.props;
+    //     getCorpDetail(dispatch, corpCode);
+    // }
 
-    shouldComponentUpdate(newProps, newState) {
-        if (Object.keys(newProps.corpDetail).length > 0
-            && (newProps.isCorpDetailRequested === false 
-            && newProps.corpCode !== newProps.corpDetail.corp_code)
-        ) {
-            const { dispatch, corpCode } = newProps;
-            getCorpDetail(dispatch, corpCode);
+    // shouldComponentUpdate(newProps, newState) {
+    //     if (Object.keys(newProps.corpDetail).length > 0
+    //         && (newProps.isCorpDetailRequested === false 
+    //         && newProps.corpCode !== newProps.corpDetail.corp_code)
+    //     ) {
+    //         const { dispatch, corpCode } = newProps;
+    //         getCorpDetail(dispatch, corpCode);
 
-            return false;
-        }
+    //         return false;
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
     // componentDidUpdate(newProps, newState) {
     //     console.log(newProps);
@@ -37,33 +37,31 @@ class Analyzer extends React.Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12}>
-                    <AnalyzerResult {...this.props}/>
+                    <AnalyzerResult corpCode={this.props.corpCode} />
                 </Grid>
             </Grid>
         );
     }
 }
 
-function getCorpDetail(dispatch, corpCode) {
-    dispatch(requestCorpDetail());
+// function getCorpDetail(dispatch, corpCode) {
+//     dispatch(requestCorpDetail());
 
-    axios.get(ENDPOINTS + 'api/search/' + corpCode)
-    .then(response => {
-        dispatch(getSuccessedCorpDetail(response.data));
-    }).catch(error => {
-        console.log(error);
-        dispatch(getFailedCorpDetail(error));
-    }).finally(() => {
-        dispatch(responseCorpDetail());
-    });
-}
+//     axios.get(ENDPOINTS + 'api/search/' + corpCode)
+//     .then(response => {
+//         dispatch(getSuccessedCorpDetail(response.data));
+//     }).catch(error => {
+//         console.log(error);
+//         dispatch(getFailedCorpDetail(error));
+//     }).finally(() => {
+//         dispatch(responseCorpDetail());
+//     });
+// }
 
-function select(props, ownProps) {
+function mapStateToProps(state, ownProps) {
     return {
-        isCorpDetailRequested   : props.isCorpDetailRequested,
-        corpDetail              : props.corpDetail,
-        corpCode                : ownProps.match.params.corpCode
+        corpCode : ownProps.match.params.corpCode
     }
 }
 
-export default connect(select)(Analyzer)
+export default connect(mapStateToProps)(Analyzer)

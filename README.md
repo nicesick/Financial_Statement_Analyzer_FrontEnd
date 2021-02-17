@@ -7,6 +7,8 @@
 > 2021-02-15 : createSlice, createAsyncThunk 를 사용하기 위해 Redux-Toolkit 모듈을 적용하였습니다.
 >
 > 2021-02-16 : Search 부분을 createSlice, createAsyncThunk 형식으로 수정하였습니다. 그 과정에서 Redux-Thunk 모듈을 추가하였습니다.
+>
+> 2021-02-17 : Update, Analyze 부분을 Redux-Thunk 모듈을 이용해 재구성하였습니다.
 
 
 

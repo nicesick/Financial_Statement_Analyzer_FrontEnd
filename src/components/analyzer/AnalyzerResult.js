@@ -1,3 +1,7 @@
+import React, { useEffect }   from 'react'
+import axios        from 'axios'
+import { connect }  from 'react-redux'
+
 import { Grid }     from '@material-ui/core'
 import { Alert }    from '@material-ui/lab'
 
@@ -5,7 +9,16 @@ import AnalyzerResultBarChart   from './AnalyzerResultBarChart'
 import AnalyzerResultLineChart  from './AnalyzerResultLineChart'
 import AnalyzerTable            from './AnalyzerTable';
 
+import { analyzeThunk } from '../../slice/AnalyzeSlice'
+
 function AnalyzerResult(props) {
+    const { dispatch , corpCode }       = props;
+    const { analyzing, corpDetails }    = props.analyze;
+
+    useEffect(() => {
+        dispatch(analyzeThunk(corpCode));
+    },[corpCode]);
+
     const resultingMessage      = '분석중입니다.';
     const shouldResultMessage   = '분석해주세요.';
 
@@ -14,12 +27,15 @@ function AnalyzerResult(props) {
 
     let resultMessage   = undefined;
     let isItems         = false;
-    if (props.isCorpDetailRequested === true) {
-        resultMessage       = <Alert severity="warning">{resultingMessage}</Alert>;
-    } else if (Object.keys(props.corpDetail).length < 1) {
-        resultMessage       = <Alert severity="info">{shouldResultMessage}</Alert>;
+
+    if (analyzing) {
+        resultMessage = <Alert severity="warning">{resultingMessage}</Alert>;
     } else {
-        if (props.corpDetail.status === true) {
+        const status = corpDetails.status;
+
+        if (status === '') {
+            resultMessage   = <Alert severity="info">{shouldResultMessage}</Alert>;
+        } else if (status === 200) {
             isItems         = true;
             resultMessage   = <Alert severity="success">{successedMessage}</Alert>;
         } else {
@@ -42,7 +58,7 @@ function AnalyzerResult(props) {
     let tables_infos            = [];
 
     if (isItems) {
-        const corp_detail = props.corpDetail;
+        const corp_detail = corpDetails.data;
 
         if (corp_detail.corp_details !== undefined && corp_detail.corp_evals.issue.is_eval_done === true) {
             corp_detail.corp_details.map(corp_detail => {
@@ -164,4 +180,11 @@ function AnalyzerResult(props) {
     );
 }
 
-export default AnalyzerResult
+const mapStateToProps = (state, ownProps) => {
+    return {
+        analyze     : state.analyze,
+        corpCode    : ownProps.corpCode
+    }
+}
+
+export default connect(mapStateToProps)(AnalyzerResult)

@@ -14,10 +14,12 @@ function SearchResult(props) {
 
     if (props.searching) {
         searchMessage       = <Alert severity="warning">{searchingMessage}</Alert>;
-    } else if (Object.keys(props.corpInfos).length < 1) {
-        searchMessage       = <Alert severity="info">{shouldSearchMessage}</Alert>;
     } else {
-        if (props.corpInfos.status === 200) {
+        const status = props.corpInfos.status;
+
+        if (status === '') {
+            searchMessage       = <Alert severity="info">{shouldSearchMessage}</Alert>;
+        } else if (status === 200) {
             isItems         = true;
             searchMessage   = <Alert severity="success">{props.corpInfos.data.length}{successedMessage}</Alert>;
         } else {
