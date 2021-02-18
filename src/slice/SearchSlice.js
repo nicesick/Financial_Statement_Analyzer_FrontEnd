@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { CONTENTS_URI, ENDPOINTS, SEARCH_URI } from '../constants/Constants'
+import { SEARCH_CORP_CLS_URI , SEARCH_EVALUATE_URI, ENDPOINTS, SEARCH_URI } from '../constants/Constants'
 
 const initialState = {
     searching           : false,
     searchEvaluates     : [],
+    searchCorpClses     : [],
     searchParams        : {
         corpName        : '',
-        corpCls         : 'Y',
+        corpCls         : '',
         sortByService   : ''
     },
     corpInfos           : {
@@ -16,11 +17,23 @@ const initialState = {
     }
 };
 
-export const searchEvaluatesThunk = createAsyncThunk(
-    'api/search/contents',
+export const searchCorpClsesThunk = createAsyncThunk(
+    'api/search/corpCls',
     async (emptyValue = null, { dispatch, rejectWithValue }) => {
         try {
-            const response = await axios.get(`${ENDPOINTS}${CONTENTS_URI}`);
+            const response = await axios.get(`${ENDPOINTS}${SEARCH_CORP_CLS_URI}`);
+            return response;
+        } catch(err) {
+            return rejectWithValue(err);
+        }
+    }
+);
+
+export const searchEvaluatesThunk = createAsyncThunk(
+    'api/search/evaluate',
+    async (emptyValue = null, { dispatch, rejectWithValue }) => {
+        try {
+            const response = await axios.get(`${ENDPOINTS}${SEARCH_EVALUATE_URI}`);
             return response;
         } catch(err) {
             return rejectWithValue(err);
@@ -52,6 +65,19 @@ const searchSlice = createSlice({
         }
     },
     extraReducers: {
+        [searchCorpClsesThunk.pending]: (state, action) => {
+
+        },
+        [searchCorpClsesThunk.fulfilled]: (state, action) => {
+            state.searchCorpClses = ['A'];
+        
+            action.payload.data.map(data => {
+                state.searchCorpClses.push(data);
+            });
+        },
+        [searchCorpClsesThunk.rejected]: (state, action) => {
+
+        },
         [searchEvaluatesThunk.pending]: (state, action) => {
         },
         [searchEvaluatesThunk.fulfilled]: (state, action) => {

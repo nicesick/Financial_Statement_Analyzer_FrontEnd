@@ -7,14 +7,15 @@ import SearchItem   from './SearchItem'
 import SearchButton from './SearchButton'
 import SearchResult from './SearchResult'
 
-import { changeSearchParams, searchEvaluatesThunk, searchCorpInfosThunk } from '../../slice/SearchSlice'
+import { changeSearchParams, searchEvaluatesThunk, searchCorpClsesThunk, searchCorpInfosThunk } from '../../slice/SearchSlice'
 
 const SearchContent = (props) => {
-    const { dispatch }                      = props;
-    const { searchParams, searchEvaluates } = props.search;
+    const { dispatch } = props;
+    const { searchParams, searchEvaluates, searchCorpClses } = props.search;
 
     useEffect(() => {
         dispatch(searchEvaluatesThunk());
+        dispatch(searchCorpClsesThunk());
     }, [dispatch]);
 
     // const contents  = [
@@ -68,8 +69,11 @@ const SearchContent = (props) => {
                                     {/* {values.map((value, index) => {
                                         return <FormControlLabel key={index} label={value} value={value} control={<Radio />}/>
                                     })} */}
-                                    <FormControlLabel label='코스피' value={'Y'} control={<Radio />} />
-                                    <FormControlLabel label='코스닥' value={'K'} control={<Radio />} />
+                                    {/* <FormControlLabel label='코스피' value={'Y'} control={<Radio />} />
+                                    <FormControlLabel label='코스닥' value={'K'} control={<Radio />} /> */}
+                                    {searchCorpClses.map((searchCorpCls, idx) => {
+                                        return <FormControlLabel key={idx} label={searchCorpCls} value={searchCorpCls} control={<Radio />} />
+                                    })}
                                 </RadioGroup>
                             </FormControl>
                         </Grid>

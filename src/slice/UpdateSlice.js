@@ -64,7 +64,11 @@ const updateSlice = createSlice({
         [updatePostThunk.fulfilled]: (state, action) => {
             state.updating          = false;
             state.updateTime.status = action.payload.status;
-            state.updateTime.data   = action.payload.data;
+            
+            if (action.payload.status === 200) {
+                state.updateTime.data.progress      = action.payload.data.progress;
+                state.updateTime.data.updateDate    = action.payload.data.updateDate.substr(0, 10);
+            }
         },
         [updatePostThunk.rejected]: (state, action) => {
             state.updating          = false;

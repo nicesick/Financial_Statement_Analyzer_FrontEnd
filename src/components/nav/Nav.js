@@ -30,7 +30,7 @@ const Nav = props => {
             <NavItem name='Update' href='/update' />
     
             <NavUpdateTime {...props.update} />
-            {/* <AnalyzerSearch {...this.props} /> */}
+            <AnalyzerSearch {...props.search} />
         </Grid>
     );
 }
@@ -60,7 +60,8 @@ const Nav = props => {
 
 const mapStateToProps = state => {
     return {
-        update: state.update
+        update: state.update,
+        search: state.search
     };
 }
 
