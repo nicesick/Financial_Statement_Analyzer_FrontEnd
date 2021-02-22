@@ -72,7 +72,7 @@ const searchSlice = createSlice({
             state.searchCorpClses = ['A'];
         
             action.payload.data.map(data => {
-                state.searchCorpClses.push(data);
+                return state.searchCorpClses.push(data);
             });
         },
         [searchCorpClsesThunk.rejected]: (state, action) => {

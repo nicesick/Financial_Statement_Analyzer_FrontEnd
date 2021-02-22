@@ -25,21 +25,41 @@ function AnalyzerResult(props) {
     const successedMessage      = '분석되었습니다.';
     const failedMessage         = '분석에 실패했습니다.';
 
-    let resultMessage   = undefined;
-    let isItems         = false;
+    let corpDetailMsg       = undefined;
+    let issueEvalDoneMsg    = undefined;
+    let incomeEvalDoneMsg   = undefined;
 
+    let isItems             = false;
     if (analyzing) {
-        resultMessage = <Alert severity="warning">{resultingMessage}</Alert>;
+        corpDetailMsg       = <Alert severity="warning">재무제표 {resultingMessage}</Alert>;
+        issueEvalDoneMsg    = <Alert severity="warning">관리종목 {resultingMessage}</Alert>;
+        incomeEvalDoneMsg   = <Alert severity="warning">영업이익 {resultingMessage}</Alert>;
     } else {
         const status = corpDetails.status;
 
         if (status === '') {
-            resultMessage   = <Alert severity="info">{shouldResultMessage}</Alert>;
+            corpDetailMsg       = <Alert severity="info">재무제표 {shouldResultMessage}</Alert>;
+            issueEvalDoneMsg    = <Alert severity="info">관리종목 {shouldResultMessage}</Alert>;
+            incomeEvalDoneMsg   = <Alert severity="info">영업이익 {shouldResultMessage}</Alert>;
         } else if (status === 200) {
-            isItems         = true;
-            resultMessage   = <Alert severity="success">{successedMessage}</Alert>;
+            isItems             = true;
+            corpDetailMsg       = <Alert severity="success">재무제표 {successedMessage}</Alert>;
+            
+            if (corpDetails.data.corp_evals.issue.is_eval_done) {
+                issueEvalDoneMsg = <Alert severity="success">관리종목 {successedMessage}</Alert>;
+            } else {
+                issueEvalDoneMsg = <Alert severity="error">관리종목 {failedMessage}</Alert>;
+            }
+
+            if (corpDetails.data.corp_evals.operatingIncomeGrowthRatio.is_eval_done) {
+                incomeEvalDoneMsg = <Alert severity="success">영업이익 {successedMessage}</Alert>;
+            } else {
+                incomeEvalDoneMsg   = <Alert severity="error">영업이익 {failedMessage}</Alert>;
+            }
         } else {
-            resultMessage   = <Alert severity="error">{failedMessage}</Alert>;
+            corpDetailMsg       = <Alert severity="error">재무제표 {failedMessage}</Alert>;
+            issueEvalDoneMsg    = <Alert severity="error">관리종목 {failedMessage}</Alert>;
+            incomeEvalDoneMsg   = <Alert severity="error">영업이익 {failedMessage}</Alert>;
         }
     }
 
@@ -56,22 +76,44 @@ function AnalyzerResult(props) {
     let bar_chart_infos         = {};
     let line_chart_infos        = {};
     let tables_infos            = [];
+    let income_tables_infos     = [];
 
     if (isItems) {
         const corp_detail = corpDetails.data;
 
-        if (corp_detail.corp_details !== undefined && corp_detail.corp_evals.issue.is_eval_done === true) {
+        if (corp_detail.corp_details !== undefined) {
             corp_detail.corp_details.map(corp_detail => {
                 thstrmDts.push(corp_detail.thstrm_dt);
         
-                totLiabilitys.push(parseInt(corp_detail.tot_liability.replace(/,/g, '')));
-                totStockholdersEquitys.push(parseInt(corp_detail.tot_stockholders_equity.replace(/,/g, '')));
-                stockholdersEquitys.push(parseInt(corp_detail.stockholders_equity.replace(/,/g, '')));
+                const tot_liability             = corp_detail.tot_liability != null ?
+                                                corp_detail.tot_liability.replace(/,/g, '') : '0';
+
+                const tot_stockholders_equity   = corp_detail.tot_stockholders_equity != null ?
+                                                corp_detail.tot_stockholders_equity.replace(/,/g, '') : '0';
+
+                const stockholders_equity       = corp_detail.stockholders_equity != null ?
+                                                corp_detail.stockholders_equity.replace(/,/g, '') : '0';
+
+                const revenue                   = corp_detail.revenue != null ?
+                                                corp_detail.revenue.replace(/,/g, '') : '0';
+
+                const operating_income          = corp_detail.operating_income != null ?
+                                                corp_detail.operating_income.replace(/,/g, '') : '0';
+
+                const income_before_tax         = corp_detail.income_before_tax != null ?
+                                                corp_detail.income_before_tax.replace(/,/g, '') : '0';
+
+                const net_income                = corp_detail.net_income != null ?
+                                                corp_detail.net_income.replace(/,/g, '') : '0';
+
+                totLiabilitys.push(parseInt(tot_liability));
+                totStockholdersEquitys.push(parseInt(tot_stockholders_equity));
+                stockholdersEquitys.push(parseInt(stockholders_equity));
         
-                revenues.push(parseInt(corp_detail.revenue.replace(/,/g, '')));
-                operatingIncomes.push(parseInt(corp_detail.operating_income.replace(/,/g, '')));
-                incomeBeforeTaxs.push(parseInt(corp_detail.income_before_tax.replace(/,/g, '')));
-                netIncomes.push(parseInt(corp_detail.net_income.replace(/,/g, '')));
+                revenues.push(parseInt(revenue));
+                operatingIncomes.push(parseInt(operating_income));
+                incomeBeforeTaxs.push(parseInt(income_before_tax));
+                netIncomes.push(parseInt(net_income));
         
                 return true;
             });
@@ -157,25 +199,47 @@ function AnalyzerResult(props) {
             tables_infos.push(operatingIncome_table_infos);
             tables_infos.push(lossBeforeTax_table_infos);
         }
+
+        if (corp_detail.corp_evals.operatingIncomeGrowthRatio.is_eval_done) {
+            const isKeepOperatingIncomePositive             = corp_detail.corp_evals.operatingIncomeGrowthRatio.is_keep_operating_income_positive;
+            const isKeepOperatingIncomeGrowthRatioPositive  = corp_detail.corp_evals.operatingIncomeGrowthRatio.is_keep_operating_income_growth_ratio_positive;
+            const operatingIncomeGrowthRatio                = corp_detail.corp_evals.operatingIncomeGrowthRatio.operating_income_growth_ratio;
+
+            const operatingIncomeGrowthRatio_table_infos = {
+                labels : ['영업이익 매년 흑자여부', '영업이익 매년 성장여부', '영업이익 성장률'],
+                title : corp_detail.corp_name + ' 영업이익 성장률',
+                tables : [{
+                    data: [isKeepOperatingIncomePositive.toString(), isKeepOperatingIncomeGrowthRatioPositive.toString(), operatingIncomeGrowthRatio]
+                }]
+            }
+    
+            income_tables_infos.push(operatingIncomeGrowthRatio_table_infos);
+        }
     }
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
             <Grid item xs={12}>
-                {resultMessage}
+                {corpDetailMsg}
             </Grid>
-            {isItems === false ? null : 
-                <Grid item xs={12}>
-                    <Grid container spacing={1}>
-                        <AnalyzerResultBarChart     chart_infos={bar_chart_infos} />
-                        <AnalyzerResultLineChart    chart_infos={line_chart_infos} />
-            
-                        {tables_infos.map((table_infos, index) => {
-                            return <AnalyzerTable key={index} table_infos={table_infos}/>
-                        })}
-                    </Grid>
-                </Grid>
+            {Object.keys(bar_chart_infos).length <= 0 ? null : 
+                <AnalyzerResultBarChart     chart_infos={bar_chart_infos} />
             }
+            {Object.keys(line_chart_infos).length <= 0 ? null : 
+                <AnalyzerResultLineChart    chart_infos={line_chart_infos} />
+            }
+            <Grid item xs={12}>
+                {issueEvalDoneMsg}
+            </Grid>
+            {tables_infos.map((table_info, index) => {
+                return <AnalyzerTable key={index} table_infos={table_info}/>
+            })}
+            <Grid item xs={12}>
+                {incomeEvalDoneMsg}
+            </Grid>
+            {income_tables_infos.map((table_info, index) => {
+                return <AnalyzerTable key={index} table_infos={table_info}/>
+            })}
         </Grid>
     );
 }

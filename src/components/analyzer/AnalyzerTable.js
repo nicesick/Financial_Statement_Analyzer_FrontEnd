@@ -4,10 +4,10 @@ function AnalyzerTable(props) {
     const { table_infos } = props;
 
     return (
-        <Grid item xs={12}>
+        <Grid item xs={6} sm={12}>
             <TableContainer component={Paper}>
                 <Table>
-                    <caption>{table_infos.title} : {table_infos.result === false ? 'False' : <strong>True</strong>}</caption>
+                    <caption>{table_infos.title}{table_infos.result != null ? ' : ' + table_infos.result.toString() : null}</caption>
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
