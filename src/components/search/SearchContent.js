@@ -92,9 +92,9 @@ const SearchContent = (props) => {
                     </Grid>
                 </form>
             </Grid>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12} md={6}>
                 <SearchResult {...props.search} />
-            </Grid>
+            </Grid> */}
         </Grid>
     );
 }

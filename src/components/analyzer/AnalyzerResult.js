@@ -9,12 +9,21 @@ import AnalyzerResultBarChart   from './AnalyzerResultBarChart'
 import AnalyzerResultLineChart  from './AnalyzerResultLineChart'
 import AnalyzerTable            from './AnalyzerTable';
 
-import { analyzeThunk } from '../../slice/AnalyzeSlice'
+import { analyzeThunk, reportUriThunk } from '../../slice/AnalyzeSlice'
 
 function AnalyzerResult(props) {
-    const { dispatch , corpCode }       = props;
-    const { analyzing, corpDetails }    = props.analyze;
+    const { dispatch , corpCode }                   = props;
+    const { analyzing, corpDetails, reportUri }     = props.analyze;
 
+    useEffect(() => {
+        dispatch(reportUriThunk());
+    });
+
+    /**
+     * corpCode Effect
+     * 
+     * 1. corpCode 변경 시, 해당 기업 재무제표 정보 획득
+     */
     useEffect(() => {
         dispatch(analyzeThunk(corpCode));
     },[corpCode]);
@@ -25,12 +34,14 @@ function AnalyzerResult(props) {
     const successedMessage      = '분석되었습니다.';
     const failedMessage         = '분석에 실패했습니다.';
 
+    let reportUriMsg        = undefined;
     let corpDetailMsg       = undefined;
     let issueEvalDoneMsg    = undefined;
     let incomeEvalDoneMsg   = undefined;
 
     let isItems             = false;
     if (analyzing) {
+        reportUriMsg        = <Alert severity="warning">보고서정보 {resultingMessage}</Alert>;
         corpDetailMsg       = <Alert severity="warning">재무제표 {resultingMessage}</Alert>;
         issueEvalDoneMsg    = <Alert severity="warning">관리종목 {resultingMessage}</Alert>;
         incomeEvalDoneMsg   = <Alert severity="warning">영업이익 {resultingMessage}</Alert>;
@@ -38,11 +49,13 @@ function AnalyzerResult(props) {
         const status = corpDetails.status;
 
         if (status === '') {
+            reportUriMsg        = <Alert severity="info">보고서정보 {shouldResultMessage}</Alert>;
             corpDetailMsg       = <Alert severity="info">재무제표 {shouldResultMessage}</Alert>;
             issueEvalDoneMsg    = <Alert severity="info">관리종목 {shouldResultMessage}</Alert>;
             incomeEvalDoneMsg   = <Alert severity="info">영업이익 {shouldResultMessage}</Alert>;
         } else if (status === 200) {
             isItems             = true;
+            reportUriMsg        = <Alert severity="success">보고서정보 {successedMessage}</Alert>;
             corpDetailMsg       = <Alert severity="success">재무제표 {successedMessage}</Alert>;
             
             if (corpDetails.data.corp_evals.issue.is_eval_done) {
@@ -54,9 +67,10 @@ function AnalyzerResult(props) {
             if (corpDetails.data.corp_evals.operatingIncomeGrowthRatio.is_eval_done) {
                 incomeEvalDoneMsg = <Alert severity="success">영업이익 {successedMessage}</Alert>;
             } else {
-                incomeEvalDoneMsg   = <Alert severity="error">영업이익 {failedMessage}</Alert>;
+                incomeEvalDoneMsg = <Alert severity="error">영업이익 {failedMessage}</Alert>;
             }
         } else {
+            reportUriMsg        = <Alert severity="error">보고서정보 {failedMessage}</Alert>;
             corpDetailMsg       = <Alert severity="error">재무제표 {failedMessage}</Alert>;
             issueEvalDoneMsg    = <Alert severity="error">관리종목 {failedMessage}</Alert>;
             incomeEvalDoneMsg   = <Alert severity="error">영업이익 {failedMessage}</Alert>;
@@ -64,6 +78,8 @@ function AnalyzerResult(props) {
     }
 
     let thstrmDts               = [];
+    let reportNos               = [];
+
     let totLiabilitys           = [];
     let totStockholdersEquitys  = [];
     let stockholdersEquitys     = [];
@@ -73,18 +89,21 @@ function AnalyzerResult(props) {
     let incomeBeforeTaxs        = [];
     let netIncomes              = [];
 
-    let bar_chart_infos         = {};
-    let line_chart_infos        = {};
+    let report_table_infos      = [];
     let tables_infos            = [];
     let income_tables_infos     = [];
+    
+    let bar_chart_infos         = {};
+    let line_chart_infos        = {};
 
     if (isItems) {
         const corp_detail = corpDetails.data;
-
+        
         if (corp_detail.corp_details !== undefined) {
             corp_detail.corp_details.map(corp_detail => {
                 thstrmDts.push(corp_detail.thstrm_dt);
-        
+                reportNos.push(corp_detail.rcept_no);
+
                 const tot_liability             = corp_detail.tot_liability != null ?
                                                 corp_detail.tot_liability.replace(/,/g, '') : '0';
 
@@ -119,6 +138,23 @@ function AnalyzerResult(props) {
             });
         }
     
+        /**
+         * 보고서정보
+         */
+        const report_table_info = {
+            labels      : thstrmDts,
+            title       : corp_detail.corp_name + ' 보고서정보',
+            tables      : [{
+                data    : reportNos.map(reportNo => {
+                    return <a href={`${reportUri}${reportNo}`} target="_blank">{reportNo}</a>
+                })
+            }]
+        };
+        report_table_infos.push(report_table_info);
+
+        /**
+         * 재무제표 정보
+         */
         bar_chart_infos = {
             labels      : thstrmDts ,
             title       : corp_detail.corp_name + ' 재무상태표',
@@ -200,6 +236,9 @@ function AnalyzerResult(props) {
             tables_infos.push(lossBeforeTax_table_infos);
         }
 
+        /**
+         * 영업이익 성장률
+         */
         if (corp_detail.corp_evals.operatingIncomeGrowthRatio.is_eval_done) {
             const isKeepOperatingIncomePositive             = corp_detail.corp_evals.operatingIncomeGrowthRatio.is_keep_operating_income_positive;
             const isKeepOperatingIncomeGrowthRatioPositive  = corp_detail.corp_evals.operatingIncomeGrowthRatio.is_keep_operating_income_growth_ratio_positive;
@@ -219,6 +258,12 @@ function AnalyzerResult(props) {
 
     return (
         <Grid container spacing={1}>
+            <Grid item xs={12}>
+                {reportUriMsg}
+            </Grid>
+            {report_table_infos.map((report_table_info, index) => {
+                return <AnalyzerTable key={index} table_infos={report_table_info}/>
+            })}
             <Grid item xs={12}>
                 {corpDetailMsg}
             </Grid>
