@@ -6,7 +6,7 @@ function AnalyzerTable(props) {
     return (
         <Grid item xs={6} sm={12}>
             <TableContainer component={Paper}>
-                <Table>
+                <Table size='small'>
                     <caption>{table_infos.title}{table_infos.result != null ? ' : ' + table_infos.result.toString() : null}</caption>
                     <TableHead>
                         <TableRow>
